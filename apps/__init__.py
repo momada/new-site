@@ -7,7 +7,7 @@ from apps.modules.device import mod_device
 
 
 app = Flask(__name__)
-app.config.from_pyfile('apps.cfg')
+app.config.from_pyfile('event.cfg')
 
 #db_server = os.environ['OPENSHIFT_MONGODB_DB_HOST'] + ':' + os.environ['OPENSHIFT_MONGODB_DB_PORT']
 #mongo_user = 'admin'
