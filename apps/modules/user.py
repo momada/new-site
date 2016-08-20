@@ -13,8 +13,8 @@ mod_user = Blueprint('user', __name__)
 @mod_user.route('/api/user/authentication', methods=['POST'])
 def authentication():
     user = request.json
-    # print(user['username'], file=sys.stderr)
-    # print(user['password'], file=sys.stderr)
+    print >> sys.stderr, user['username']
+    print >> sys.stderr, user['password']
 #    db = mongo['news']
 #    validUserCount = db['User'].find({"username": re.compile(user['username'], re.IGNORECASE),"password":user['password']}).count()
 #    if validUserCount == 0:
