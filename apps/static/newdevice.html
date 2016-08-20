@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>new device callin</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css">
+		<script src="js/jquery.min.js"></script>
+		<script src="js/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+						namespace = '/ws';
+            var socket = io.connect('http://' + document.domain + ':' + location.port +namespace);
+
+
+            $('form#createdevice').submit(function(event) {
+								if($("#esn").val()=='' || $("#accountId").val()==''){
+									alert('wrong data')
+									return false;
+								}
+									
+                var device = {
+									_id : $("#esn").val(),
+									esn : $("#esn").val(),
+									accountId : $("#accountId").val(),
+									make : $("#make").val(),
+									model : $("#model").val(),
+									deviceName : $("#deviceName").val()
+								}
+								
+								$.ajax({
+									url: '/api/devices',
+									method: 'POST',
+									contentType:'application/json',
+									data: JSON.stringify(device),
+									dataType:"json",
+									success: function (data) {
+										socket.emit('EventOccurred', {accountId: $("#accountId").val(), monitorId:"m4"});
+										$("#esn").val('');
+										$("#make").val('');
+										$("#model").val('');
+										$("#deviceName").val('');
+										alert("new device has been created")
+									},
+									error: function (message){
+										alert("error")
+									}
+
+								});
+								
+                return false;
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <h1>New device enrollment</h1>
+<div></div>
+    <form id="createdevice" method="POST" action='#'>
+        <input type="text" name="esn" id="esn" placeholder="esn">
+				<select name="accountId" id="accountId" placeholder="accountId">
+					<option value="account1">account1</option>
+					<option value="account2">account2</option>
+				</select>
+				<input type="text" name="make" id="make" placeholder="make">
+				<input type="text" name="model" id="model" placeholder="model">
+				<input type="text" name="deviceName" id="deviceName" placeholder="deviceName">
+        <input type="submit" value="Enroll New Device">
+    </form>
+		
+		
+ 
+</body>
+</html>
