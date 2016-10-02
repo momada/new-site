@@ -1,10 +1,10 @@
 from setuptools import setup
 
-setup(name='EventMonitor',
+setup(name='FlaskApp',
       version='1.0',
-      description='A basic Flask app with Flask, SocketIO, mongodb',
-      author='Jason Lei',
-      author_email='momada@zoho.com',
-      url='http://www.python.org',
-      install_requires=['Flask>=0.10.1', 'pymongo>=3.3', 'flask_socketio==2.6', 'werkzeug==0.11', 'bson==0.4.3'],
+      description='A basic Flask app with static files',
+      author='Ryan Jarvinen',
+      author_email='ryanj@redhat.com',
+      url='http://www.python.org/sigs/distutils-sig/',
+      install_requires=['Flask==0.11', 'pymongo >= 3.3.0', 'requests>=2.1'],
       )

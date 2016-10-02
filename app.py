@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 # This file may be used instead of Apache mod_wsgi to run your python
 # web application in a different framework.  A few examples are
 # provided (cherrypi, gevent), but this file may be altered to run
@@ -18,16 +18,21 @@ try:
         execfile(virtualenv, dict(__file__=virtualenv))
     else:
         exec (open(virtualenv).read(), dict(__file__=virtualenv))
+
 except IOError:
     pass
+
 #
 # IMPORTANT: Put any additional includes below this line.  If placed above this
 # line, it's possible required libraries won't be in your searchable path
 #
+
+
+#
 #  main():
 #
 if __name__ == '__main__':
-    application = imp.load_source('app', 'apps/__init__.py')
+    application = imp.load_source('app', 'news/__init__.py')
     port = application.app.config['PORT']
     ip = application.app.config['IP']
     app_name = application.app.config['APP_NAME']
@@ -55,18 +60,13 @@ if __name__ == '__main__':
         server.start()
 
     elif fwtype == "flask":
-        from flask import Flask
-
-        server = Flask(__name__)
-        server.wsgi_app = application.app
-        server.run(host=ip, port=port)
+        # from news import app
+        # app.wsgi_app = application.app
+        # app.run(debug=True)
+        # application.app.wsgi_app = application.app
+        application.app.run(host=ip, port=port, debug=False)
 
     else:
         from wsgiref.simple_server import make_server
 
         make_server(ip, port, application.app).serve_forever()
-
-    from apps import app, socketio
-
-    app.wsgi_app = application.app
-    socketio.run(app, host=host_name, port=port, debug=False)
