@@ -5,11 +5,10 @@ from datetime import datetime
 app = Flask(__name__)
 app.config.from_pyfile('news.cfg')
 
-#mongo = MongoClient('localhost:27017')
 mongo = MongoClient(app.config['MONGODB_HOST'], app.config['MONGODB_PORT'])
 
 db = mongo['news']
-db.authenticate('admin', '6gdpaxrdzM5N')
+#db.authenticate('admin', '6gdpaxrdzM5N')
 
 
 @app.route('/')

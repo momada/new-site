@@ -1,24 +1,22 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*-coding:utf-8-*-
 # news.py fetch news from web sites
 
 import datetime
-import os
+import imp
 import re
-import sqlite3
 import sys
 import time
 from Queue import Queue
 from threading import Thread
 import requests
-
-
 import database
 from download import httpfetch
 
-HOST_NAME = os.environ.get('OPENSHIFT_APP_DNS', 'localhost:8000')
+application = imp.load_source('app', '../news/__init__.py')
+HOST_NAME = application.app.config['HOST_NAME']
 q = Queue()
-MAXC = 15
+MAXC = 1
 
 
 def thread_fetch():
@@ -28,7 +26,7 @@ def thread_fetch():
         q.task_done()
 
 
-def wenxue(num=2):
+def wenxue(num=1):
     urlbase = 'http://www.wenxuecity.com/news/'
     for i in range(1, num + 1):
         # print 'fetching wenxue city news on page', i, '...'
@@ -123,11 +121,12 @@ def fetch(i, debug=False):
             print sys.exc_info()[1]
             continue
     try:
-        res = re.compile(r'<div class="maincontainer">(.*?)<div class="sharewechat">', re.DOTALL).findall(res)[0]
+        res = re.compile(r'<div class="maincontainer">(.*?)VIDEO CODE-->', re.DOTALL).findall(res)[0]
         title = re.compile(r'<h3>(.*?)</h3>', re.DOTALL).findall(res)
     except Exception as e:
         print e
         print url
+        title = None
     if title:
         title = html_decode(title[0].encode('utf-8'))
         link = url
@@ -137,7 +136,7 @@ def fetch(i, debug=False):
             source = re.compile(r'itemprop="author">(.*?)</span>', re.DOTALL).findall(parse)[0]
             post_date = re.compile(r'datetime(.*?)</time>', re.DOTALL).findall(parse)[0]
             post_date = post_date.split('>')[1]
-            content = re.compile(r'<div id="articleContent" class="article">(.*?)<iframe', re.DOTALL).findall(res)[0]
+            content = re.compile(r'<div id="articleContent" class="article">(.*?)<!--ADMARU ', re.DOTALL).findall(res)[0]
             if content:
                 # content = content[0]
                 content = re.compile(r'<div style=(.*?)>', re.DOTALL).sub('', content)
@@ -146,6 +145,7 @@ def fetch(i, debug=False):
                 content = re.compile(r'&.*?;', re.DOTALL).sub(' ', content)
                 content = re.compile(r'\n\s+', re.DOTALL).sub('\n', content)
                 content = content.strip()
+                content = content.replace(u'：', ':')
             else:
                 content = ''
                 print news_id
@@ -221,7 +221,7 @@ for i in range(MAXC):
     t.start()
 
 if __name__ == '__main__':
-
+    fetch("/news/2018/12/01/7866657.html", True)
     # Import Psyco if available
     try:
         import psyco
